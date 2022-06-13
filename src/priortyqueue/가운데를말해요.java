@@ -18,7 +18,6 @@ public class 가운데를말해요 {
             if (minHeap.size() == maxHeap.size()) {
                 maxHeap.add(value);
             } else minHeap.add(value);
-
             if (!minHeap.isEmpty() && !maxHeap.isEmpty()) {
                 if (maxHeap.peek() > minHeap.peek()) {
                     minHeap.add(maxHeap.poll());
