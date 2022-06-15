@@ -4,74 +4,50 @@ import java.util.*;
 import java.io.*;
 
 public class 내리막길 {
+    static int n, m;
+    static int[][] map, dp;
     //우, 하, 좌, 상
-    static int[] x = {0, 1, 0, -1};
-    static int[] y = {1, 0, -1, 0};
+    static int[] dx = {0, 1, 0, -1};
+    static int[] dy = {1, 0, -1, 0};
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        Stack<Coordinate> backTrack = new Stack<>();
 
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
-        int[][] map = new int[n][m];
-        boolean[][] check = new boolean[n][m];
-        int[][] dp = new int[n][m];
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        map = new int[n][m];
+        dp = new int[n][m];
 
         for (int i = 0; i < n; i++) {
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < m; j++) {
                 map[i][j] = Integer.parseInt(st.nextToken());
+                dp[i][j] = -1;
             }
         }
 
-        dp[0][0] = 1;
-        int X = 0, Y = 0, idx = 0;
-        while (true) {
-            boolean inside = true;
+        System.out.println(dfs(0, 0));
+    }
+
+    private static int dfs(int x, int y) {
+        if (x == n - 1 && y == m - 1) {
+            return 1; //끝에 도달하면 한개 누적
+        }
+
+        if (dp[x][y] == -1) { //한번도 가지 않은 곳만 탐색
+            dp[x][y] = 0;
             for (int i = 0; i < 4; i++) {
-                if (i == 0 && idx != 0) {
-                    if(idx < 4){
-                        i = idx;
-                        idx = 0;
-                    } else X = Integer.MAX_VALUE;
-                }
-                int newX = X + x[i];
-                int newY = Y + y[i];
-                if (!(newX >= n || newX < 0 || newY >= m || newY < 0)) {
-                    if (map[X][Y] > map[newX][newY]) {
-                        backTrack.add(new Coordinate(X, Y, i + 1));
-                        check[newX][newY] = !check[newX][newY];
-                        dp[newX][newY]++;
-                        X = newX;
-                        Y = newY;
-                        break;
+                int newX = x + dx[i];
+                int newY = y + dy[i];
+                if (!(newX < 0 || newX >= n || newY < 0 || newY >= m)) {
+                    if (map[x][y] > map[newX][newY]) {
+                        dp[x][y] += dfs(newX, newY);
                     }
                 }
-                if (i == 3) {
-                    check[X][Y] = !check[X][Y];
-                    if(!backTrack.isEmpty()){
-                        Coordinate cd = backTrack.pop();
-                        X = cd.x;
-                        Y = cd.y;
-                        idx = cd.i;
-                    } else inside = false;
-                }
             }
-            if(!inside && X == 0 && Y == 0) break;
         }
-        System.out.println(dp[n - 1][m - 1]);
+
+        return dp[x][y];
     }
-
-    static class Coordinate {
-        int x, y, i;
-
-        public Coordinate(int x, int y, int i) {
-            this.x = x;
-            this.y = y;
-            this.i = i;
-        }
-    }
-
 }
