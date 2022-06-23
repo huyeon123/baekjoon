@@ -48,14 +48,13 @@ public class 이분그래프 {
 
                 for (int j = 0; j < graph[current].size(); j++) {
                     Integer next = graph[current].get(j);
-                    if(visit[next] == 0) queue.add(next);
-
                     if (visit[next] == visit[current]) {
                         System.out.println("NO");
                         return;
                     }
 
                     if (visit[next] == 0) {
+                        queue.add(next);
                         if(visit[current] == 1) visit[next] = 2;
                         else if(visit[current] == 2) visit[next] = 1;
                     }
